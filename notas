@@ -1,9 +1,20 @@
+To make an API request with parameters, OAuth2 authentication, and save the result as JSON in an Oracle database, you can use the requests library to make the API request, save the JSON response to a file, and then use cx_Oracle to insert that JSON data into the Oracle database. Here's a Python script that accomplishes this:
+
+python
+Copy code
 import requests
 import cx_Oracle
+import json
 
 # Define the API endpoint and OAuth2 token
 api_url = 'https://api.example.com/your-api-endpoint'
 oauth2_token = 'your_oauth2_token_here'
+
+# Define the API parameters
+api_params = {
+    'param1': 'value1',
+    'param2': 'value2'
+}
 
 # Define the headers with the Authorization header containing the token
 headers = {
@@ -11,12 +22,16 @@ headers = {
     'Content-Type': 'application/json',
 }
 
-# Make an API request
-response = requests.get(api_url, headers=headers)
+# Make an API request with parameters
+response = requests.get(api_url, headers=headers, params=api_params)
 
 if response.status_code == 200:
     # Request was successful, parse the JSON response
     json_response = response.json()
+    
+    # Save the JSON response to a file
+    with open('api_response.json', 'w') as file:
+        json.dump(json_response, file)
     
     # Connect to the Oracle database
     connection = cx_Oracle.connect("username/password@your_oracle_service")
@@ -24,10 +39,14 @@ if response.status_code == 200:
     # Create a cursor
     cursor = connection.cursor()
     
-    # Insert data into the Oracle database (modify the SQL statement and data)
-    for record in json_response:
-        cursor.execute("INSERT INTO your_table (column1, column2) VALUES (:val1, :val2)",
-                       val1=record['key1'], val2=record['key2'])
+    # Read the JSON data from the file
+    with open('api_response.json', 'r') as file:
+        json_data = json.load(file)
+    
+    # Insert the JSON data into the Oracle database (modify the SQL statement)
+    for record in json_data:
+        cursor.execute("INSERT INTO your_table (json_data) VALUES (:data)",
+                       data=json.dumps(record))
     
     # Commit the changes and close the cursor and connection
     connection.commit()
@@ -39,3 +58,6 @@ else:
     # Request failed, handle the error
     print(f"Request failed with status code {response.status_code}")
     print(response.text)
+Replace 'https://api.example.com/your-api-endpoint', 'your_oauth2_token_here', "username/password@your_oracle_service", and the SQL statement in the cursor.execute with your actual API endpoint, OAuth2 token, Oracle database connection details, and database table structure.
+
+This script first makes the API request, saves the JSON response to a file, reads the JSON data from the file, and inserts it into the Oracle database. Make sure to have the Oracle client libraries and the necessary drivers for cx_Oracle properly configured on your system.
