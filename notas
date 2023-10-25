@@ -1,0 +1,41 @@
+import requests
+import cx_Oracle
+
+# Define the API endpoint and OAuth2 token
+api_url = 'https://api.example.com/your-api-endpoint'
+oauth2_token = 'your_oauth2_token_here'
+
+# Define the headers with the Authorization header containing the token
+headers = {
+    'Authorization': f'Bearer {oauth2_token}',
+    'Content-Type': 'application/json',
+}
+
+# Make an API request
+response = requests.get(api_url, headers=headers)
+
+if response.status_code == 200:
+    # Request was successful, parse the JSON response
+    json_response = response.json()
+    
+    # Connect to the Oracle database
+    connection = cx_Oracle.connect("username/password@your_oracle_service")
+    
+    # Create a cursor
+    cursor = connection.cursor()
+    
+    # Insert data into the Oracle database (modify the SQL statement and data)
+    for record in json_response:
+        cursor.execute("INSERT INTO your_table (column1, column2) VALUES (:val1, :val2)",
+                       val1=record['key1'], val2=record['key2'])
+    
+    # Commit the changes and close the cursor and connection
+    connection.commit()
+    cursor.close()
+    connection.close()
+    
+    print("Data inserted into Oracle database.")
+else:
+    # Request failed, handle the error
+    print(f"Request failed with status code {response.status_code}")
+    print(response.text)
