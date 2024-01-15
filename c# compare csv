@@ -1,0 +1,79 @@
+Certainly! To compare two CSV files using C#, you can use the TextFieldParser class from the Microsoft.VisualBasic.FileIO namespace, which is part of the .NET Framework. Here's an example code:
+
+csharp
+Copy code
+using Microsoft.VisualBasic.FileIO;
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string file1Path = "file1.csv";
+        string file2Path = "file2.csv";
+
+        if (CompareCsvFiles(file1Path, file2Path))
+        {
+            Console.WriteLine("CSV files are identical.");
+        }
+        else
+        {
+            Console.WriteLine("CSV files are different.");
+        }
+    }
+
+    static bool CompareCsvFiles(string filePath1, string filePath2)
+    {
+        using (TextFieldParser parser1 = new TextFieldParser(filePath1))
+        using (TextFieldParser parser2 = new TextFieldParser(filePath2))
+        {
+            parser1.TextFieldType = FieldType.Delimited;
+            parser1.SetDelimiters(",");
+
+            parser2.TextFieldType = FieldType.Delimited;
+            parser2.SetDelimiters(",");
+
+            while (!parser1.EndOfData && !parser2.EndOfData)
+            {
+                string[] fields1 = parser1.ReadFields();
+                string[] fields2 = parser2.ReadFields();
+
+                if (!AreArraysEqual(fields1, fields2))
+                {
+                    return false; // Files are different
+                }
+            }
+
+            // Check if one file has more rows than the other
+            return parser1.EndOfData && parser2.EndOfData;
+        }
+    }
+
+    static bool AreArraysEqual<T>(T[] array1, T[] array2)
+    {
+        if (array1.Length != array2.Length)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < array1.Length; i++)
+        {
+            if (!EqualityComparer<T>.Default.Equals(array1[i], array2[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+This C# code reads both CSV files using TextFieldParser and compares them row by row. The CompareCsvFiles method checks if the fields in each row are equal, and the AreArraysEqual method is used to compare arrays. If any difference is found, the method returns false, indicating that the CSV files are different.
+
+Make sure to replace "file1.csv" and "file2.csv" with the actual file paths you want to compare.
+
+
+
+
+
