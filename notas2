@@ -1,0 +1,38 @@
+Certainly! To compare two CSV files using Python, you can use the pandas library, which is a powerful data manipulation and analysis library. Here's a simple example code that compares two CSV files:
+
+python
+Copy code
+import pandas as pd
+
+def compare_csv(file1, file2):
+    # Read CSV files into pandas DataFrames
+    df1 = pd.read_csv(file1)
+    df2 = pd.read_csv(file2)
+
+    # Check if the column names are the same in both DataFrames
+    if list(df1.columns) != list(df2.columns):
+        print("Column names are different. Files are not comparable.")
+        return
+
+    # Check if the data in the DataFrames is the same
+    if df1.equals(df2):
+        print("Both CSV files are identical.")
+    else:
+        print("CSV files are different.")
+
+if __name__ == "__main__":
+    # Replace 'file1.csv' and 'file2.csv' with the actual file paths you want to compare
+    compare_csv('file1.csv', 'file2.csv')
+This code uses the pd.read_csv function to read the CSV files into two Pandas DataFrames (df1 and df2). It then checks if the column names are the same and if the data in the DataFrames is identical. If there are any differences, it will indicate that the CSV files are different.
+
+Make sure to replace 'file1.csv' and 'file2.csv' with the actual file paths you want to compare. Also, you'll need to have the pandas library installed. You can install it using:
+
+bash
+Copy code
+pip install pandas
+If your CSV files have a different structure or if you want to perform a more detailed comparison, you may need to modify the code accordingly.
+
+
+
+
+
