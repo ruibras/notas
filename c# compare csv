@@ -74,6 +74,50 @@ This C# code reads both CSV files using TextFieldParser and compares them row by
 Make sure to replace "file1.csv" and "file2.csv" with the actual file paths you want to compare.
 
 
+***************************************
 
+Suppose you have an XML file named "example.xml" with the following content:
+
+xml
+Copy code
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <person>
+        <name>John Doe</name>
+        <age>30</age>
+        <city>New York</city>
+    </person>
+    <person>
+        <name>Jane Smith</name>
+        <age>25</age>
+        <city>Los Angeles</city>
+    </person>
+</root>
+Here's a Python script that reads and extracts data from this XML file:
+
+python
+Copy code
+import xml.etree.ElementTree as ET
+
+# Parse the XML file
+tree = ET.parse("example.xml")
+root = tree.getroot()
+
+# Iterate through each person element
+for person_elem in root.findall("person"):
+    # Extract data from each person
+    name = person_elem.find("name").text
+    age = int(person_elem.find("age").text)
+    city = person_elem.find("city").text
+
+    # Print the extracted data
+    print(f"Name: {name}, Age: {age}, City: {city}")
+In this script:
+
+ET.parse("example.xml") is used to parse the XML file.
+root = tree.getroot() gets the root element of the XML tree.
+root.findall("person") finds all "person" elements in the XML.
+person_elem.find("name").text extracts the text content of the "name" element for each person.
+You can adapt this example based on your XML structure and the specific data you want to extract.
 
 
