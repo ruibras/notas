@@ -1,0 +1,14 @@
+  string filePath = "example.xml"; // Replace with the path to your XML file
+
+        try
+        {
+            // Read the XML file into a string
+            string xmlContent = File.ReadAllText(filePath);
+
+            // Print the XML content
+            Console.WriteLine("XML Content:\n" + xmlContent);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
