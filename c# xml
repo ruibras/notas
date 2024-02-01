@@ -12,3 +12,73 @@
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
+****************
+
+To deserialize an XML file with multiple levels into an object in C#, you can use the XmlSerializer class. Here's an example:
+
+Suppose you have the following XML file named "example.xml":
+
+
+
+
+using System;
+using System.IO;
+using System.Xml.Serialization;
+
+// Define classes to represent the XML structure
+[XmlRoot("Root")]
+public class Root
+{
+    [XmlElement("Person")]
+    public Person Person { get; set; }
+}
+
+public class Person
+{
+    [XmlElement("Name")]
+    public string Name { get; set; }
+
+    [XmlElement("Age")]
+    public int Age { get; set; }
+
+    [XmlElement("Address")]
+    public Address Address { get; set; }
+}
+
+public class Address
+{
+    [XmlElement("City")]
+    public string City { get; set; }
+
+    [XmlElement("Street")]
+    public string Street { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        string filePath = "example.xml"; // Replace with the path to your XML file
+
+        try
+        {
+            // Deserialize the XML file into an object
+            XmlSerializer serializer = new XmlSerializer(typeof(Root));
+
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
+            {
+                Root root = (Root)serializer.Deserialize(fileStream);
+
+                // Access the deserialized object
+                Console.WriteLine($"Name: {root.Person.Name}");
+                Console.WriteLine($"Age: {root.Person.Age}");
+                Console.WriteLine($"City: {root.Person.Address.City}");
+                Console.WriteLine($"Street: {root.Person.Address.Street}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}
