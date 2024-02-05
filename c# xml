@@ -94,4 +94,89 @@ class Program
 }
 
 *****************
+C#  vide to deseriaze 2 XML files and find correlation and export to csv both oject values side-by-side
+ChatGPT
+Certainly! To find correlation between values of two deserialized XML objects and export the results to a CSV file, you can use the following C# code:
+
+csharp
+Copy code
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml.Serialization;
+using CsvHelper;
+
+class Program
+{
+    static void Main()
+    {
+        // Deserialize first XML file
+        YourObject firstObject = DeserializeXmlFile<YourObject>("path/to/first/file.xml");
+
+        // Deserialize second XML file
+        YourObject secondObject = DeserializeXmlFile<YourObject>("path/to/second/file.xml");
+
+        // Find correlation and export to CSV
+        List<CorrelationResult> correlationResults = FindCorrelationAndExportToCSV(firstObject, secondObject, "output.csv");
+
+        Console.WriteLine($"Correlation results exported to output.csv");
+    }
+
+    static T DeserializeXmlFile<T>(string filePath)
+    {
+        XmlSerializer serializer = new XmlSerializer(typeof(T));
+        using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
+        {
+            return (T)serializer.Deserialize(fileStream);
+        }
+    }
+
+    static List<CorrelationResult> FindCorrelationAndExportToCSV(object obj1, object obj2, string outputCsvPath)
+    {
+        List<CorrelationResult> results = new List<CorrelationResult>();
+
+        // Implement your correlation logic here, assuming obj1 and obj2 are of the same type
+        // For simplicity, let's assume the objects have properties called "Value1" and "Value2" that you want to correlate
+        // You might need to customize this based on your actual scenario
+
+        // Replace "Value1" and "Value2" with the actual properties you want to correlate
+        var propertiesToCorrelate = typeof(YourObject).GetProperties();
+
+        foreach (var property in propertiesToCorrelate)
+        {
+            var value1 = property.GetValue(obj1);
+            var value2 = property.GetValue(obj2);
+
+            results.Add(new CorrelationResult
+            {
+                PropertyName = property.Name,
+                Value1 = value1?.ToString(),
+                Value2 = value2?.ToString()
+            });
+        }
+
+        // Export to CSV
+        using (var writer = new StreamWriter(outputCsvPath))
+        using (var csv = new CsvWriter(writer))
+        {
+            csv.WriteRecords(results);
+        }
+
+        return results;
+    }
+}
+
+// Replace YourObject with the actual class representing the structure of your XML objects
+// Define CorrelationResult class to store correlation results
+public class CorrelationResult
+{
+    public string PropertyName { get; set; }
+    public string Value1 { get; set; }
+    public string Value2 { get; set; }
+}
+Make sure to replace YourObject with the class that represents the structure of your XML objects and adjust the property names or correlation logic as needed
+
+********
+
+
 
